@@ -1,11 +1,8 @@
-module map-udf
+module sideinput
 
 go 1.21.2
 
-require (
-	github.com/fsnotify/fsnotify v1.6.0
-	github.com/numaproj/numaflow-go v0.5.1
-)
+require github.com/numaproj/numaflow-go v0.5.2
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
