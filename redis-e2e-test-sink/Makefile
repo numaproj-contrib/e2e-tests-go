@@ -4,7 +4,7 @@ build:
 
 .PHONY: image
 image: build
-	docker build -t "quay.io/numaio/numaflow-sink/redis-e2e-test-sink:latest" --target redis .
+	docker buildx build --no-cache -t "quay.io/numaio/redis-e2e-test-sink-sideinput:latest" --target redis .
 
 clean:
 	-rm -rf ./dist
