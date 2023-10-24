@@ -27,7 +27,6 @@ var counter = 0
 
 // handle is the side input handler function.
 func handle(_ context.Context) sideinputsdk.Message {
-	// generate message based on even and odd counter
 	counter++
 	// BroadcastMessage() is used to broadcast the message with the given value to other side input vertices.
 	// val must be converted to []byte.

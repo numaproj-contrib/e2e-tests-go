@@ -3,8 +3,8 @@ PLATFORM=linux/x86_64
 TARGET=sideinput-example
 
 IMAGE_TAG=$(TAG)
-ifdef ($(IMAGE_TAG),)
-	IMAGE_TAG="dev"
+ifeq ($(IMAGE_TAG),)
+	IMAGE_TAG=dev
 endif
 
 .PHONY: build
@@ -14,7 +14,7 @@ build:
 .PHONY: image
 #To build an image that supports multiple platforms(linux/amd64,linux/arm64) and push to quay.io, use the following command
 image: build
-	docker buildx build -t "$(DOCKERIO_ORG)/numaproj-contrib/e2e-map-sideinput-example:$(IMAGE_TAG)" --platform $(PLATFORM) --target $(TARGET) .
+	docker buildx build -t "$(DOCKERIO_ORG)/numaproj-contrib/e2e-map-sideinput-example:$(IMAGE_TAG)" --platform $(PLATFORM) --target $(TARGET) . --load
 
 .PHONY: lint
 lint:

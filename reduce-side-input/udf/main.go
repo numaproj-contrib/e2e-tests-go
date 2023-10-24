@@ -35,31 +35,27 @@ var mu sync.RWMutex
 
 func ReduceFn(ctx context.Context, keys []string, reduceCh <-chan reducer.Datum, md reducer.Metadata) reducer.Messages {
 	mu.RLock()
-	data := sideInputData
+	siData := sideInputData
 	mu.RUnlock()
 
-	var resultVal []byte
 	var reduceSum = 0
 	// sum up the values
 	for d := range reduceCh {
-		val := d.Value()
-
-		v, err := strconv.Atoi(string(val))
+		value, err := strconv.Atoi(string(d.Value()))
 		if err != nil {
-			log.Printf("unable to convert the value to int: %v\n", err)
+			log.Printf("unable to convert the value to integer: %v\n", err)
 			continue
 		}
-		reduceSum += v
+
+		reduceSum += value
 	}
 
-	log.Printf("sideinput data: %v", data)
-	if len(data) > 0 {
-		siData := []byte("side-input-data")
-		return reducer.MessagesBuilder().Append(reducer.NewMessage(siData).WithKeys([]string{"side-input-count"}))
+	if reduceSum > 0 && len(siData) > 0 {
+		msg := []byte("reduce-side-input")
+		return reducer.MessagesBuilder().Append(reducer.NewMessage(msg))
+	} else {
+		return reducer.MessagesBuilder().Append(reducer.MessageToDrop())
 	}
-
-	resultVal = []byte(strconv.Itoa(reduceSum))
-	return reducer.MessagesBuilder().Append(reducer.NewMessage(resultVal).WithKeys([]string{"reduce-sum"}))
 }
 
 func main() {

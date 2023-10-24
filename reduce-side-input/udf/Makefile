@@ -3,7 +3,7 @@ PLATFORM=linux/x86_64
 TARGET=reduce-sideinput-udf
 
 IMAGE_TAG=$(TAG)
-ifdef ($(IMAGE_TAG),)
+ifeq ($(IMAGE_TAG),)
 	IMAGE_TAG="dev"
 endif
 
@@ -14,7 +14,7 @@ build:
 .PHONY: image
 #To build an image that supports multiple platforms(linux/amd64,linux/arm64) and push to quay.io, use the following command
 image: build
-	docker buildx build -t "$(DOCKERIO_ORG)/numaproj-contrib/e2e-reduce-sideinput-udf:$(IMAGE_TAG)" --platform $(PLATFORM) --target reduce-sideinput-udf .
+	docker buildx build -t "$(DOCKERIO_ORG)/numaproj-contrib/e2e-reduce-sideinput-udf:$(IMAGE_TAG)" --platform $(PLATFORM) --target reduce-sideinput-udf . --load
 
 .PHONY: lint
 lint:

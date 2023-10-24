@@ -29,11 +29,11 @@ func handle(_ context.Context) sideinputsdk.Message {
 	// generate message based on even and odd counter
 	counter++
 	if counter%2 == 0 {
-		return sideinputsdk.BroadcastMessage([]byte("even-data"))
+		return sideinputsdk.BroadcastMessage([]byte("even"))
 	}
 	// BroadcastMessage() is used to broadcast the message with the given value to other side input vertices.
 	// val must be converted to []byte.
-	return sideinputsdk.BroadcastMessage([]byte("odd-data"))
+	return sideinputsdk.BroadcastMessage([]byte("odd"))
 }
 
 func main() {

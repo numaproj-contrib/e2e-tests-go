@@ -3,7 +3,7 @@ module udf
 go 1.21.2
 
 require (
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/numaproj/numaflow-go v0.5.1
 )
 

@@ -32,14 +32,23 @@ var sideInputName = "myticker"
 var sideInputData []byte
 var mu sync.RWMutex
 
-func mapFn(_ context.Context, _ []string, _ mapper.Datum) mapper.Messages {
+func mapFn(_ context.Context, _ []string, d mapper.Datum) mapper.Messages {
+	msg := d.Value()
+
 	// take a read lock before updating sideInputData data to prevent race condition
 	mu.RLock()
-	defer mu.RUnlock()
-	if len(sideInputData) > 0 {
-		return mapper.MessagesBuilder().Append(mapper.NewMessage(sideInputData))
+	siData := sideInputData
+	mu.RUnlock()
+
+	if len(siData) > 0 {
+		if string(siData) == "even" {
+			return mapper.MessagesBuilder().Append(mapper.NewMessage([]byte(string(msg) + "-even-data")))
+		} else if string(siData) == "odd" {
+			return mapper.MessagesBuilder().Append(mapper.NewMessage([]byte(string(msg) + "-odd-data")))
+		}
 	}
-	return mapper.MessagesBuilder().Append(mapper.NewMessage([]byte("some_value")))
+
+	return mapper.MessagesBuilder().Append(mapper.MessageToDrop())
 }
 
 func main() {
