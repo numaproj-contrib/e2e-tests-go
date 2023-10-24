@@ -4,7 +4,7 @@ build: clean
 
 .PHONY: image
 image: build
-	docker buildx build --no-cache -t "quay.io/numaio/simple_source_with_sideinput:latest"  --platform linux/amd64,linux/arm64  --target simple-source . --push
+	docker buildx build --no-cache -t "quay.io/numaio/numaflow-source/simple_source_with_sideinput:latest"  --platform linux/amd64,linux/arm64  --target simple-source . --push
 
 clean:
 	-rm -rf ./dist
