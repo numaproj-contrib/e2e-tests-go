@@ -15,11 +15,11 @@ func handle(_ context.Context) sideinputsdk.Message {
 	// broadcast it to other side input vertices.
 	counter = (counter + 1) % 10
 	if counter%2 == 0 {
-		return sideinputsdk.BroadcastMessage([]byte(`e2e-even`))
+		return sideinputsdk.BroadcastMessage([]byte(`test-data`))
 	}
 	// BroadcastMessage() is used to broadcast the message with the given value to other side input vertices.
 	// val must be converted to []byte.
-	return sideinputsdk.BroadcastMessage([]byte(`e2e-odd`))
+	return sideinputsdk.BroadcastMessage([]byte(`test-data`))
 }
 
 func main() {
