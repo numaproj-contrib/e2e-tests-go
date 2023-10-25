@@ -3,6 +3,8 @@ name: CI
 on:
   push:
     branches: [ main ]
+    tags:
+      - '*'
   pull_request:
     branches: [ main ]
 
@@ -11,18 +13,18 @@ jobs:
     name: map-side-input-lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: map-side-input
     env:
       GOPATH: /home/runner/go
     steps:
-      - name: "Step 1: Set output for job"
-        id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-
-      - name: "Step 2: Checkout repository"
+      - name: "Step 1: Checkout repository"
         uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: "Step 2: Run prerequisite steps"
+        run: | 
+          echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
 
       - name: "Step 3: Setup Golang"
         uses: actions/setup-go@v4.0.0
@@ -37,48 +39,54 @@ jobs:
 
       - name: "Step 5: Run Lint on map-side-input"
         run: make lint
+        working-directory: ./map-side-input
 
       - name: "Step 6: Run Lint on map-side-input udf"
         run: make lint
-        working-directory: udf
+        working-directory: ./map-side-input/udf
 
       - name: "Step 7: Build and create docker image for map-side-input"
         run: make image
+        working-directory: ./map-side-input
         env:
-          TAG: $(basename $GITHUB_REF)
+          TAG: "${{ env.IMAGE_TAG }}"
 
       - name: "Step 8: Build and create docker image for map-side-input udf"
         run: make image
+        working-directory: ./map-side-input/udf
         env:
-          TAG: $(basename $GITHUB_REF)
-        working-directory: udf
+          TAG: "${{ env.IMAGE_TAG }}"
 
       - name: "Step 9: Docker Login"
-        uses: docker/login-action@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
       - name: "Step 10: Build docker image"
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker push "quay.io/numaio/numaproj-contrib/e2e-map-sideinput-example:$(basename $GITHUB_REF)"
-          docker push "quay.io/numaio/numaproj-contrib/e2e-map-sideinput-udf:$(basename $GITHUB_REF)"
+          docker push "quay.io/numaio/numaproj-contrib/e2e-map-sideinput-example:${{ env.IMAGE_TAG }}"
+          docker push "quay.io/numaio/numaproj-contrib/e2e-map-sideinput-udf:${{ env.IMAGE_TAG }}"
 
   reduce-side-input:
     name: reduce-side-input-lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: reduce-side-input
     env:
       GOPATH: /home/runner/go
     steps:
-      - name: "Step 1: Set output for job"
-        id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: "Step 1: Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: "Step 2: Run prerequisite steps"
+        run: |
+          echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
 
       - name: "Step 2: Checkout repository"
         uses: actions/checkout@v3
@@ -96,23 +104,26 @@ jobs:
 
       - name: "Step 5: Run Lint on reduce-side-input"
         run: make lint
+        working-directory: ./map-side-input
 
       - name: "Step 6: Run Lint on reduce-side-input udf"
         run: make lint
-        working-directory: udf
+        working-directory: ./map-side-input/udf
 
       - name: "Step 7: Build and create docker image for reduce-side-input"
         run: make image
+        working-directory: ./map-side-input
         env:
-          TAG: $(basename $GITHUB_REF)
+          TAG: ${{ env.IMAGE_TAG }}
 
       - name: "Step 8: Build and create docker image for reduce-side-input udf"
         run: make image
+        working-directory: ./map-side-input/udf
         env:
-          TAG: $(basename $GITHUB_REF)
-        working-directory: udf
+          TAG: ${{ env.IMAGE_TAG }}
 
       - name: "Step 9: Docker Login"
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: docker/login-action@v2
         with:
           registry: quay.io
@@ -120,7 +131,7 @@ jobs:
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
       - name: "Step 10: Build docker image"
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-example:$(basename $GITHUB_REF)"
-          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-udf:$(basename $GITHUB_REF)"
+          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-example:${{ env.IMAGE_TAG }}"
+          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-udf:${{ env.IMAGE_TAG }}"
