@@ -33,41 +33,69 @@ func (ar TestAckRequest) Offsets() []sourcer.Offset {
 	return ar.offsets
 }
 
-func Test_SimpleSource(t *testing.T) {
+func TestNewSimpleSource(t *testing.T) {
 	underTest := NewSimpleSource()
 	// Prepare a channel to receive messages
 	messageCh := make(chan sourcer.Message, 20)
+	doneCh := make(chan struct{}) // to know when the go routine is done
 
-	// Read 2 messages
-	underTest.Read(nil, TestReadRequest{
-		count:   2,
-		timeout: time.Second,
-	}, messageCh)
+	go func() {
+		// Read 2 messages
+		underTest.Read(nil, TestReadRequest{
+			count:   2,
+			timeout: time.Second,
+		}, messageCh)
+		close(doneCh)
+	}()
+	// We will send messages to GlobalChan
+	globalChan <- "test_data_1"
+	globalChan <- "test_data_2"
+	<-doneCh
 	assert.Equal(t, 2, len(messageCh))
 
 	// Try reading 4 more messages
 	// Since the previous batch didn't get acked, the data source shouldn't allow us to read more messages
 	// We should get 0 messages, meaning the channel only holds the previous 2 messages
-	underTest.Read(nil, TestReadRequest{
-		count:   4,
-		timeout: time.Second,
-	}, messageCh)
+
+	go func() {
+		// Read 2 messages
+		underTest.Read(nil, TestReadRequest{
+			count:   4,
+			timeout: time.Second,
+		}, messageCh)
+	}()
+
 	assert.Equal(t, 2, len(messageCh))
 
 	// Ack the first batch
 	msg1 := <-messageCh
 	msg2 := <-messageCh
+	assert.Equal(t, "test_data_1", string(msg1.Value()))
+	assert.Equal(t, "test_data_2", string(msg2.Value()))
+
 	underTest.Ack(nil, TestAckRequest{
 		offsets: []sourcer.Offset{msg1.Offset(), msg2.Offset()},
 	})
+	doneCh2 := make(chan struct{}) // to know when the go routine is done
 
-	// Try reading 6 more messages
-	// Since the previous batch got acked, the data source should allow us to read more messages
-	// We should get 6 messages
-	underTest.Read(nil, TestReadRequest{
-		count:   6,
-		timeout: time.Second,
-	}, messageCh)
+	// Reading 6 more messages by sending in the globalchan
+	go func() {
+		// Read 2 messages
+		underTest.Read(nil, TestReadRequest{
+			count:   6,
+			timeout: time.Second,
+		}, messageCh)
+		close(doneCh2)
+	}()
+
+	// We will send messages to GlobalChan
+	globalChan <- "test_data_1"
+	globalChan <- "test_data_2"
+	globalChan <- "test_data_3"
+	globalChan <- "test_data_4"
+	globalChan <- "test_data_5"
+	globalChan <- "test_data_6"
+	<-doneCh2
 	assert.Equal(t, 6, len(messageCh))
 
 	// Ack the second batch
@@ -85,4 +113,5 @@ func Test_SimpleSource(t *testing.T) {
 			msg7.Offset(), msg8.Offset(),
 		},
 	})
+
 }

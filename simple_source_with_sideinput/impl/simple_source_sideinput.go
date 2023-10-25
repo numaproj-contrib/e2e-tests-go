@@ -45,6 +45,10 @@ func (s *SimpleSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest
 	ctx, cancel := context.WithTimeout(context.Background(), readRequest.TimeOut())
 	defer cancel()
 
+	if len(s.toAckSet) > 0 {
+		return
+	}
+
 	// Read the data from the source and send the data to the message channel.
 	for i := 0; uint64(i) < readRequest.Count(); i++ {
 		select {
