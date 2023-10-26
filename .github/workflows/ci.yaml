@@ -217,7 +217,7 @@ jobs:
 
       - name: "Step 5: Run Lint on simple_source_with_sideinput"
         run: make lint
-        working-directory: ./simple_source_with_sideinput
+        working-directory: ./simple-source-with-sideinput
 
       - name: "Step 6: Build and create docker image for simple_source_with_sideinput"
         run: make image
