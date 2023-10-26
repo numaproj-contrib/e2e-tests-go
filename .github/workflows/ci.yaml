@@ -175,8 +175,7 @@ jobs:
         run: make image
         working-directory: ./sink-side-input
         env:
-          TAG: $(basename $GITHUB_REF)
-
+          TAG: ${{ env.IMAGE_TAG }}
 
       - name: "Step 8: Docker Login"
         if: startsWith(github.ref, 'refs/tags/v')
@@ -187,9 +186,9 @@ jobs:
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
       - name: "Step 9: Build docker image"
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker push "quay.io/numaio/numaflow-sink/redis-e2e-test-sink-with-sideinput:$(basename $GITHUB_REF)"
+          docker push "quay.io/numaio/numaflow-sink/redis-e2e-test-sink-with-sideinput:$(env.IMAGE_TAG)"
           
 
   simple_source_with_sideinput:
@@ -199,41 +198,38 @@ jobs:
     env:
       GOPATH: /home/runner/go
     steps:
-      - name: "Step 1: Set output for job"
-        id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
-      - name: "Step 2: Run prerequisite steps"
+      - name: "Step 1: Run prerequisite steps"
         run: |
           echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
           
 
-      - name: "Step 3: Checkout repository"
+      - name: "Step 2: Checkout repository"
         uses: actions/checkout@v3
 
-      - name: "Step 4: Setup Golang"
+      - name: "Step 3: Setup Golang"
         uses: actions/setup-go@v4.0.0
         with:
           go-version: '1.21'
 
-      - name: "Step 5: Restore Go build cache"
+      - name: "Step 4: Restore Go build cache"
         uses: actions/cache@v3
         with:
           path: ~/.cache/go-build
           key: ${{ runner.os }}-go-build-v1-${{ github.run_id }}
 
-      - name: "Step 6: Run Lint on simple_source_with_sideinput"
+      - name: "Step 5: Run Lint on simple_source_with_sideinput"
         run: make lint
         working-directory: ./simple_source_with_sideinput
 
-      - name: "Step 7: Build and create docker image for simple_source_with_sideinput"
+      - name: "Step 6: Build and create docker image for simple_source_with_sideinput"
         run: make image
         working-directory: ./simple_source_with_sideinput
         env:
-          TAG: $(basename $GITHUB_REF)
+          TAG: $(env.IMAGE_TAG)
 
-      - name: "Step 8: Docker Login"
+      - name: "Step 7: Docker Login"
         if: startsWith(github.ref, 'refs/tags/v')
         uses: docker/login-action@v2
         with:
@@ -241,55 +237,51 @@ jobs:
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
-      - name: "Step 9: Build docker image"
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+      - name: "Step 8: Build docker image"
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker push "quay.io/numaio/numaflow-source/simple_source_with_sideinpu:$(basename $GITHUB_REF)" 
+          docker push "quay.io/numaio/numaflow-source/simple_source_with_sideinpu:$(env.IMAGE_TAG )" 
 
 
   sideInput_function:
-    name: sideInput_function-lint
+    name: sideInput-function-lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
       GOPATH: /home/runner/go
     steps:
-      - name: "Step 1: Set output for job"
-        id: vars
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
-
-      - name: "Step 2: Run prerequisite steps"
+      - name: "Step 1: Run prerequisite steps"
         run: |
           echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
           
 
-      - name: "Step 3: Checkout repository"
+      - name: "Step 2: Checkout repository"
         uses: actions/checkout@v3
 
-      - name: "Step 4: Setup Golang"
+      - name: "Step 3: Setup Golang"
         uses: actions/setup-go@v4.0.0
         with:
           go-version: '1.21'
 
-      - name: "Step 5: Restore Go build cache"
+      - name: "Step 4: Restore Go build cache"
         uses: actions/cache@v3
         with:
           path: ~/.cache/go-build
           key: ${{ runner.os }}-go-build-v1-${{ github.run_id }}
 
-      - name: "Step 6: Run Lint on sideInput_function"
+      - name: "Step 5: Run Lint on sideInput-function"
         run: make lint
-        working-directory: ./sideInput_function
+        working-directory: ./sideInput-function
 
-      - name: "Step 7: Build and create docker image for sideInput_function"
+      - name: "Step 6: Build and create docker image for sideInput-function"
         run: make image
-        working-directory: ./sideInput_function
+        working-directory: ./sideInput-function
         env:
-          TAG: $(basename $GITHUB_REF)
+          TAG: ${{ env.IMAGE_TAG }}
 
-      - name: "Step 8: Docker Login"
+      - name: "Step 7: Docker Login"
         if: startsWith(github.ref, 'refs/tags/v')
         uses: docker/login-action@v2
         with:
@@ -297,8 +289,8 @@ jobs:
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
-      - name: "Step 9: Build docker image"
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+      - name: "Step 8: Build docker image"
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker push "quay.io/numaio/numaflow-sideinput/sideinput-sink-e2e-test:$(basename $GITHUB_REF)"          
+          docker push "quay.io/numaio/numaflow-sideinput/sideinput-sink-e2e-test:${{ env.IMAGE_TAG }}"          
 

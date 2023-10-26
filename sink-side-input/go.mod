@@ -1,6 +1,6 @@
-module github.com/numaproj/numaflow-sinks/argoworkflow
+module github.com/numaproj-contrib/e2e-tests-go/sink-side-input
 
-go 1.18
+go 1.21
 
 require (
 	github.com/go-redis/redis/v8 v8.11.4

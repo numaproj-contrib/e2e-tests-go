@@ -4,14 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
+	"github.com/go-redis/redis/v8"
 	"github.com/numaproj/numaflow-go/pkg/sideinput"
+	sinksdk "github.com/numaproj/numaflow-go/pkg/sinker"
 	"log"
 	"os"
 	"path"
 	"sync"
-
-	"github.com/go-redis/redis/v8"
-	sinksdk "github.com/numaproj/numaflow-go/pkg/sinker"
 )
 
 var sideInputName = "myticker"
@@ -38,10 +37,6 @@ func handle(ctx context.Context, datumStreamCh <-chan sinksdk.Datum) sinksdk.Res
 		content := sideInputContent
 
 		sideInputMutex.Unlock()
-		log.Printf("Incremented by 1 the no. of occurrences of %s under hash key %s\n", content, hkey)
-		log.Printf(" %s Side input Sideinputcontent----", sideInputContent)
-		log.Printf(" %s Side input content----", content)
-
 		err := client.HIncrBy(ctx, hkey, content, 1).Err()
 		if err != nil {
 			log.Println("Set Error - ", err)
@@ -98,9 +93,7 @@ func fileWatcher(watcher *fsnotify.Watcher, sideInputName string) {
 				sideInputMutex.Lock()
 				sideInputContent = string(b)
 				sideInputMutex.Unlock()
-				// Perform some operation here, can update the value in a cache/variable
-				log.Println("File contents:----------------------- ", sideInputContent)
-				log.Println("File contents Original-- :----------------------- ", string(b))
+
 			}
 		case err, ok := <-watcher.Errors:
 			if !ok {
