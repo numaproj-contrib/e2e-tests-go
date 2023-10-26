@@ -148,10 +148,10 @@ jobs:
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
       - name: "Step 2: Run prerequisite steps"
-          run: |
-            echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
-            
+        run: |
+          echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
+          
 
       - name: "Step 3: Checkout repository"
         uses: actions/checkout@v3
@@ -207,10 +207,10 @@ jobs:
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
       - name: "Step 2: Run prerequisite steps"
-          run: |
-            echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
-            
+        run: |
+          echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
+          
 
       - name: "Step 3: Checkout repository"
         uses: actions/checkout@v3
@@ -267,10 +267,10 @@ jobs:
 
 
       - name: "Step 2: Run prerequisite steps"
-          run: |
-            echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
-            
+        run: |
+          echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
+          
 
       - name: "Step 3: Checkout repository"
         uses: actions/checkout@v3
