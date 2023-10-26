@@ -161,32 +161,29 @@ jobs:
           path: ~/.cache/go-build
           key: ${{ runner.os }}-go-build-v1-${{ github.run_id }}
 
-      - name: "Step 5: Run Lint on sink-side-input"
+      - name: "Step 5: Run Lint on sink-side-input udf"
         run: make lint
+        working-directory: ./sink-side-input
 
-      - name: "Step 6: Run Lint on sink-side-input udf"
-        run: make lint
-        working-directory: udf
-
-      - name: "Step 7: Build and create docker image for sink-side-input"
+      - name: "Step 6: Build and create docker image for sink-side-input"
         run: make image
         env:
           TAG: $(basename $GITHUB_REF)
 
-      - name: "Step 8: Build and create docker image for reduce-side-input udf"
+      - name: "Step 7: Build and create docker image for reduce-side-input udf"
         run: make image
         env:
           TAG: $(basename $GITHUB_REF)
-        working-directory: udf
+        working-directory: ./sink-side-input
 
-      - name: "Step 9: Docker Login"
+      - name: "Step 8: Docker Login"
         uses: docker/login-action@v2
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
-      - name: "Step 10: Build docker image"
+      - name: "Step 9: Build docker image"
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         run: |
           docker push "quay.io/numaio/numaflow-sink/redis-e2e-test-sink-with-sideinput:$(basename $GITHUB_REF)"
@@ -219,30 +216,27 @@ jobs:
 
       - name: "Step 5: Run Lint on simple_source_with_sideinput"
         run: make lint
+        working-directory: ./simple_source_with_sideinput
 
-      - name: "Step 6: Run Lint on simple_source_with_sideinput"
-        run: make lint
-        working-directory: udf
+      - name: "Step 6: Build and create docker image for simple_source_with_sideinput"
+        run: make image
+        env:
+          TAG: $(basename $GITHUB_REF)
 
       - name: "Step 7: Build and create docker image for simple_source_with_sideinput"
         run: make image
         env:
           TAG: $(basename $GITHUB_REF)
+        working-directory: ./simple_source_with_sideinput
 
-      - name: "Step 8: Build and create docker image for simple_source_with_sideinput"
-        run: make image
-        env:
-          TAG: $(basename $GITHUB_REF)
-        working-directory: udf
-
-      - name: "Step 9: Docker Login"
+      - name: "Step 8: Docker Login"
         uses: docker/login-action@v2
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
-      - name: "Step 10: Build docker image"
+      - name: "Step 9: Build docker image"
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         run: |
           docker push "quay.io/numaio/numaflow-source/simple_source_with_sideinpu:$(basename $GITHUB_REF)" 
@@ -275,30 +269,27 @@ jobs:
 
       - name: "Step 5: Run Lint on sideInput_function"
         run: make lint
+        working-directory: ./sideInput_function
 
-      - name: "Step 6: Run Lint on sideInput_function"
-        run: make lint
-        working-directory: udf
+      - name: "Step 6: Build and create docker image for sideInput_function"
+        run: make image
+        env:
+          TAG: $(basename $GITHUB_REF)
 
       - name: "Step 7: Build and create docker image for sideInput_function"
         run: make image
         env:
           TAG: $(basename $GITHUB_REF)
+        working-directory: ./sideInput_function
 
-      - name: "Step 8: Build and create docker image for sideInput_function"
-        run: make image
-        env:
-          TAG: $(basename $GITHUB_REF)
-        working-directory: udf
-
-      - name: "Step 9: Docker Login"
+      - name: "Step 8: Docker Login"
         uses: docker/login-action@v2
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_PASSWORD }}
 
-      - name: "Step 10: Build docker image"
+      - name: "Step 9: Build docker image"
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         run: |
           docker push "quay.io/numaio/numaflow-sideinput/sideinput-sink-e2e-test:$(basename $GITHUB_REF)"          
