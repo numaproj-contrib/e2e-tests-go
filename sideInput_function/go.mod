@@ -2,11 +2,7 @@ module github.com/numaproj/numaflow-sinks/argoworkflow
 
 go 1.21
 
-require (
-	github.com/fsnotify/fsnotify v1.6.0
-	github.com/numaproj/numaflow-go v0.5.2
-	github.com/numaproj/numaflow-go/pkg/sourcer/examples/simple_source v0.0.0-20231013201956-ab523a99adbb
-)
+require github.com/numaproj/numaflow-go v0.5.2
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect

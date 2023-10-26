@@ -1,6 +1,6 @@
 module sideinput
 
-go 1.21.2
+go 1.21
 
 require github.com/numaproj/numaflow-go v0.5.2
 
