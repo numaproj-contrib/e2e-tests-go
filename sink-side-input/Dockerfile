@@ -7,7 +7,7 @@ RUN apk update && apk upgrade && \
     apk --no-cache add tzdata
 
 COPY dist/redis-e2e-test-sink /bin/redis-e2e-test-sink
-RUN chmod +x /bin/sink-side-input
+RUN chmod +x /bin/redis-e2e-test-sink
 
 ####################################################################################################
 # redis
