@@ -1,10 +1,10 @@
 DOCKERIO_ORG=quay.io/numaio
-PLATFORM=linux/x86_64,linux/amd64,linux/arm64
+PLATFORM=linux/x86_64
 TARGET=redis
 
 IMAGE_TAG=$(TAG)
 ifeq ($(IMAGE_TAG),)
-	IMAGE_TAG=latest
+	IMAGE_TAG="latest"
 endif
 
 .PHONY: build
