@@ -71,7 +71,11 @@ func main() {
 
 	// Start a goroutine to listen for events from the watcher
 	go fileWatcher(watcher, sideInputName)
-	sinksdk.NewServer(sinksdk.SinkerFunc(handle)).Start(context.Background())
+	err = sinksdk.NewServer(sinksdk.SinkerFunc(handle)).Start(context.Background())
+	if err != nil {
+		log.Fatal(err)
+
+	}
 }
 
 func fileWatcher(watcher *fsnotify.Watcher, sideInputName string) {

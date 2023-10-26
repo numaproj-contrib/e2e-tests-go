@@ -294,6 +294,7 @@ jobs:
         run: make image
         env:
           TAG: $(basename $GITHUB_REF)
+        working-directory: ./sideInput_function
 
       - name: "Step 8: Build and create docker image for sideInput_function"
         run: make image

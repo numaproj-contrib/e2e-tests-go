@@ -1,6 +1,7 @@
 package impl
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -41,7 +42,7 @@ func TestNewSimpleSource(t *testing.T) {
 
 	go func() {
 		// Read 2 messages
-		underTest.Read(nil, TestReadRequest{
+		underTest.Read(context.TODO(), TestReadRequest{
 			count:   2,
 			timeout: time.Second,
 		}, messageCh)
@@ -59,7 +60,7 @@ func TestNewSimpleSource(t *testing.T) {
 
 	go func() {
 		// Read 2 messages
-		underTest.Read(nil, TestReadRequest{
+		underTest.Read(context.TODO(), TestReadRequest{
 			count:   4,
 			timeout: time.Second,
 		}, messageCh)
@@ -73,7 +74,7 @@ func TestNewSimpleSource(t *testing.T) {
 	assert.Equal(t, "test_data_1", string(msg1.Value()))
 	assert.Equal(t, "test_data_2", string(msg2.Value()))
 
-	underTest.Ack(nil, TestAckRequest{
+	underTest.Ack(context.TODO(), TestAckRequest{
 		offsets: []sourcer.Offset{msg1.Offset(), msg2.Offset()},
 	})
 	doneCh2 := make(chan struct{}) // to know when the go routine is done
@@ -81,7 +82,7 @@ func TestNewSimpleSource(t *testing.T) {
 	// Reading 6 more messages by sending in the globalchan
 	go func() {
 		// Read 2 messages
-		underTest.Read(nil, TestReadRequest{
+		underTest.Read(context.TODO(), TestReadRequest{
 			count:   6,
 			timeout: time.Second,
 		}, messageCh)
@@ -106,7 +107,7 @@ func TestNewSimpleSource(t *testing.T) {
 	msg7 := <-messageCh
 	msg8 := <-messageCh
 	assert.Equal(t, 0, len(messageCh))
-	underTest.Ack(nil, TestAckRequest{
+	underTest.Ack(context.TODO(), TestAckRequest{
 		offsets: []sourcer.Offset{
 			msg3.Offset(), msg4.Offset(),
 			msg5.Offset(), msg6.Offset(),
