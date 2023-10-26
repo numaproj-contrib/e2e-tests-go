@@ -140,9 +140,6 @@ jobs:
     name: sink-side-input-lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: sink-side-input
     env:
       GOPATH: /home/runner/go
     steps:
@@ -199,9 +196,6 @@ jobs:
     name: simple_source_with_sideinput-lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: simple_source_with_sideinput
     env:
       GOPATH: /home/runner/go
     steps:
@@ -258,9 +252,6 @@ jobs:
     name: sideInput_function-lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: sideInput_function
     env:
       GOPATH: /home/runner/go
     steps:

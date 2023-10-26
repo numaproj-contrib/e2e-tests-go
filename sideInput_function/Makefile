@@ -13,7 +13,7 @@ build:clean
 
 .PHONY: image
 image: build
-	docker buildx build --no-cache -t "quay.io/numaio/numaflow-sideinput/sideinput-sink-e2e-test:latest" --platform linux/amd64,linux/arm64 --target sideinput . --push
+	docker buildx build --no-cache -t "quay.io/numaio/numaflow-sideinput/sideinput-sink-e2e-test:latest" --platform $(PLATFORM) --target sideinput . --push
 
 .PHONY: lint
 lint:
