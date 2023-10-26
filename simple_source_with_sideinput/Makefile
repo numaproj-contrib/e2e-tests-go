@@ -1,6 +1,6 @@
 DOCKERIO_ORG=quay.io/numaio
 PLATFORM=linux/amd64
-TARGET=redis
+TARGET=simple-source
 
 IMAGE_TAG=$(TAG)
 ifeq ($(IMAGE_TAG),)
