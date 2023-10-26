@@ -179,7 +179,7 @@ jobs:
 
 
       - name: "Step 8: Docker Login"
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
@@ -233,7 +233,7 @@ jobs:
           TAG: $(basename $GITHUB_REF)
 
       - name: "Step 8: Docker Login"
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
@@ -288,7 +288,7 @@ jobs:
           TAG: $(basename $GITHUB_REF)
 
       - name: "Step 8: Docker Login"
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
