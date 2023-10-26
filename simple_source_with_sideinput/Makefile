@@ -1,22 +1,20 @@
 DOCKERIO_ORG=quay.io/numaio
-PLATFORM=linux/x86_64
+PLATFORM=linux/amd64
 TARGET=redis
 
 IMAGE_TAG=$(TAG)
 ifeq ($(IMAGE_TAG),)
-	IMAGE_TAG="latest"
+    IMAGE_TAG=latest
 endif
 
-.PHONY: build
+.PHONY: build image lint clean
+
 build: clean
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o ./dist/simple-source-example main.go
 
-.PHONY: image
-
 image: build
-	docker buildx build --no-cache -t "quay.io/numaio/numaflow-source/simple_source_with_sideinput:latest"  --platform $(PLATFORM)  --target simple-source . --push
+	docker buildx build --no-cache -t "$(DOCKERIO_ORG)/numaflow-source/simple_source_with_sideinput:$(IMAGE_TAG)" --platform $(PLATFORM) --target $(TARGET) . --load
 
-.PHONY: lint
 lint:
 	go mod tidy
 	golangci-lint run --fix --verbose --concurrency 4 --timeout 5m
