@@ -41,7 +41,6 @@ func TestNewSimpleSource(t *testing.T) {
 	doneCh := make(chan struct{}) // to know when the go routine is done
 
 	go func() {
-		// Read 2 messages
 		underTest.Read(context.TODO(), TestReadRequest{
 			count:   2,
 			timeout: time.Second,
@@ -53,7 +52,6 @@ func TestNewSimpleSource(t *testing.T) {
 	globalChan <- "test_data_2"
 	<-doneCh
 	assert.Equal(t, 2, len(messageCh))
-
 	// Try reading 4 more messages
 	// Since the previous batch didn't get acked, the data source shouldn't allow us to read more messages
 	// We should get 0 messages, meaning the channel only holds the previous 2 messages
@@ -81,7 +79,6 @@ func TestNewSimpleSource(t *testing.T) {
 
 	// Reading 6 more messages by sending in the globalchan
 	go func() {
-		// Read 2 messages
 		underTest.Read(context.TODO(), TestReadRequest{
 			count:   6,
 			timeout: time.Second,
