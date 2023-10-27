@@ -143,14 +143,18 @@ jobs:
     env:
       GOPATH: /home/runner/go
     steps:
-      - name: "Step 1: Run prerequisite steps"
+
+
+      - name: "Step 1: Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: "Step 2: Run prerequisite steps"
         run: |
           echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
-          
-
-      - name: "Step 2: Checkout repository"
-        uses: actions/checkout@v3
+      
 
       - name: "Step 3: Setup Golang"
         uses: actions/setup-go@v4.0.0
@@ -195,14 +199,17 @@ jobs:
       GOPATH: /home/runner/go
     steps:
 
-      - name: "Step 1: Run prerequisite steps"
+
+      - name: "Step 1: Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: "Step 2: Run prerequisite steps"
         run: |
           echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
-          
-
-      - name: "Step 2: Checkout repository"
-        uses: actions/checkout@v3
+      
 
       - name: "Step 3: Setup Golang"
         uses: actions/setup-go@v4.0.0
@@ -223,7 +230,7 @@ jobs:
         run: make image
         working-directory: ./simple-source-with-sideinput
         env:
-          TAG: $(env.IMAGE_TAG)
+          TAG: ${{env.IMAGE_TAG}}
 
       - name: "Step 7: Docker Login"
         if: startsWith(github.ref, 'refs/tags/v')
@@ -247,14 +254,17 @@ jobs:
       GOPATH: /home/runner/go
     steps:
 
-      - name: "Step 1: Run prerequisite steps"
+
+      - name: "Step 1: Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
+
+      - name: "Step 2: Run prerequisite steps"
         run: |
           echo "IMAGE_TAG=$(git describe --tags --always)" >> $GITHUB_ENV
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.0
           
-
-      - name: "Step 2: Checkout repository"
-        uses: actions/checkout@v3
 
       - name: "Step 3: Setup Golang"
         uses: actions/setup-go@v4.0.0

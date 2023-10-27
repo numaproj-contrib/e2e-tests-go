@@ -1,4 +1,4 @@
-module github.com/numaproj/numaflow-go/pkg/sourcer/examples/simple_source
+module github.com/numaproj-contrib/e2e-tests-go/simple-source-with-sideinput
 
 go 1.21
 
