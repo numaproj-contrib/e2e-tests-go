@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"github.com/fsnotify/fsnotify"
+	"github.com/numaproj-contrib/e2e-tests-go/simple-source-with-sideinput/impl"
 	"github.com/numaproj/numaflow-go/pkg/sideinput"
-	"log"
-
 	"github.com/numaproj/numaflow-go/pkg/sourcer"
-
-	"github.com/numaproj/numaflow-go/pkg/sourcer/examples/simple_source/impl"
+	"log"
 )
 
 var sideInputName = "myticker"
