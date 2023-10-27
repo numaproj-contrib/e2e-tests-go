@@ -9,7 +9,8 @@
 *.dylib
 
 # Ignore dist dir from all places
-**/dist/ 
+**/dist/
+/dist/
 
 # Test binary, built with `go test -c`
 *.test
@@ -23,3 +24,4 @@
 
 # Go workspace file
 go.work
+.idea

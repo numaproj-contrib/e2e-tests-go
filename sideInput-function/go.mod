@@ -1,4 +1,4 @@
-module sideinput
+module github.com/numaproj-contrib/e2e-tests-go/sideinput-function
 
 go 1.21
 
