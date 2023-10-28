@@ -133,8 +133,8 @@ jobs:
       - name: "Step 10: Build docker image"
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-example:$(basename $GITHUB_REF)"
-          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-udf:$(basename $GITHUB_REF)"
+          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-example:${{env.IMAGE_TAG}}"
+          docker push "quay.io/numaio/numaproj-contrib/e2e-reduce-sideinput-udf:${{env.IMAGE_TAG}}"
 
   sink-side-input:
     name: sink-side-input-lint
