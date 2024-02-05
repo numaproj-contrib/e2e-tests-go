@@ -2,7 +2,7 @@ module github.com/numaproj-contrib/e2e-tests-go/sideinput-function
 
 go 1.21
 
-require github.com/numaproj/numaflow-go v0.5.2
+require github.com/numaproj/numaflow-go v0.6.1-0.20240129164328-08210e956ad5
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect
