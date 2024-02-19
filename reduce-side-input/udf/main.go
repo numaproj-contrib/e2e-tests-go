@@ -75,7 +75,7 @@ func main() {
 	// Start a goroutine to listen for events from the watcher
 	go fileWatcher(watcher, sideInputName)
 
-	err = reducer.NewServer(reducer.ReducerFunc(ReduceFn)).Start(context.Background())
+	err = reducer.NewServer(reducer.SimpleCreatorWithReduceFn(ReduceFn)).Start(context.Background())
 	if err != nil {
 		log.Panic("Failed to start reducer function server: ", err)
 	}
