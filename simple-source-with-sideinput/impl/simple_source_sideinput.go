@@ -2,14 +2,15 @@ package impl
 
 import (
 	"context"
-	"github.com/fsnotify/fsnotify"
-	"github.com/numaproj/numaflow-go/pkg/sideinput"
 	"log"
 	"os"
 	"path"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/numaproj/numaflow-go/pkg/sideinput"
 
 	sourcesdk "github.com/numaproj/numaflow-go/pkg/sourcer"
 )
@@ -61,7 +62,7 @@ func (s *SimpleSource) Read(_ context.Context, readRequest sourcesdk.ReadRequest
 			offsetValue := serializeOffset(s.readIdx)
 			messageCh <- sourcesdk.NewMessage(
 				[]byte(value),
-				sourcesdk.NewOffset(offsetValue, "0"),
+				sourcesdk.NewOffset(offsetValue, 0),
 				time.Now())
 			// Mark the offset as to be acked, and increment the read index.
 			s.toAckSet[s.readIdx] = struct{}{}
@@ -77,6 +78,10 @@ func (s *SimpleSource) Ack(_ context.Context, request sourcesdk.AckRequest) {
 	for _, offset := range request.Offsets() {
 		delete(s.toAckSet, deserializeOffset(offset.Value()))
 	}
+}
+
+func (s *SimpleSource) Partitions(_ context.Context) []int32 {
+	return sourcesdk.DefaultPartitions()
 }
 
 func serializeOffset(idx int64) []byte {

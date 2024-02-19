@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/fsnotify/fsnotify v1.6.0
-	github.com/numaproj/numaflow-go v0.5.2
+	github.com/numaproj/numaflow-go v0.6.1-0.20240212202512-715955f1e069
 	github.com/stretchr/testify v1.8.1
 )
 
