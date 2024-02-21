@@ -29,16 +29,28 @@ import (
 	"github.com/numaproj/numaflow-go/pkg/sideinput"
 )
 
+// SumReducerCreator implements the reducer.ReducerCreator interface which creates a reducer
+type SumReducerCreator struct {
+}
+
+func (s *SumReducerCreator) Create() reducer.Reducer {
+	return &Sum{}
+}
+
+// Sum is a reducer that sum up the values for the given keys
+type Sum struct {
+	sum int
+}
+
 var sideInputName = "myticker"
 var sideInputData []byte
 var mu sync.RWMutex
 
-func ReduceFn(ctx context.Context, keys []string, reduceCh <-chan reducer.Datum, md reducer.Metadata) reducer.Messages {
+func (s *Sum) Reduce(ctx context.Context, keys []string, reduceCh <-chan reducer.Datum, md reducer.Metadata) reducer.Messages {
 	mu.RLock()
 	siData := sideInputData
 	mu.RUnlock()
 
-	var reduceSum = 0
 	// sum up the values
 	for d := range reduceCh {
 		value, err := strconv.Atoi(string(d.Value()))
@@ -47,10 +59,10 @@ func ReduceFn(ctx context.Context, keys []string, reduceCh <-chan reducer.Datum,
 			continue
 		}
 
-		reduceSum += value
+		s.sum += value
 	}
 
-	if reduceSum > 0 && len(siData) > 0 {
+	if s.sum > 0 && len(siData) > 0 {
 		msg := []byte("reduce-side-input")
 		return reducer.MessagesBuilder().Append(reducer.NewMessage(msg))
 	} else {
@@ -75,7 +87,7 @@ func main() {
 	// Start a goroutine to listen for events from the watcher
 	go fileWatcher(watcher, sideInputName)
 
-	err = reducer.NewServer(reducer.ReducerFunc(ReduceFn)).Start(context.Background())
+	err = reducer.NewServer(&SumReducerCreator{}).Start(context.Background())
 	if err != nil {
 		log.Panic("Failed to start reducer function server: ", err)
 	}
